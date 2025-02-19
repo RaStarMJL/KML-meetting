@@ -28,20 +28,20 @@
       {
         "pagePath": "pages/meetting/meetting",
         "text": "会议",
-        "iconPath": "static/icons/tab/meetting.png",
-        "selectedIconPath": "static/icons/tab/meetting-selected.png"
+        "iconPath": "src/static/icons/tab/meetting.png",
+        "selectedIconPath": "src/static/icons/tab/meetting-selected.png"
       },
       {
         "pagePath": "pages/recommend/recommend",
         "text": "推荐",
-        "iconPath": "static/icons/tab/recommend.png",
-        "selectedIconPath": "static/icons/tab/recommend-selected.png"
+        "iconPath": "src/static/icons/tab/recommend.png",
+        "selectedIconPath": "src/static/icons/tab/recommend-selected.png"
       },
       {
         "pagePath": "pages/mine/mine",
         "text": "我的",
-        "iconPath": "static/icons/tab/mine.png",
-        "selectedIconPath": "static/icons/tab/mine-selected.png"
+        "iconPath": "/src/static/icons/tab/mine.png",
+        "selectedIconPath": "/src/static/icons/tab/mine-selected.png"
       }
     ]
   },
@@ -84,8 +84,8 @@
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "uni-app",
-    "navigationBarBackgroundColor": "#F8F8F8",
-    "backgroundColor": "#F8F8F8",
+    "navigationBarBackgroundColor": "#63be75",
+    "backgroundColor": "#63be75",
     "app-plus": {
       "titleView": false
     }
