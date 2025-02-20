@@ -4,6 +4,7 @@
     {
       "path": "pages/recommend/recommend",
       "style": {
+        "navigationStyle": "custom", // 隐藏默认导航
         "navigationBarTitleText": "推荐"
       }
     },
