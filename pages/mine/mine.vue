@@ -3,18 +3,20 @@ import { ref } from 'vue';
 import { TUIUserService } from '@tencentcloud/chat-uikit-engine';
 
 interface UserInfo {
-  avatar: string;
-  nickName: string;
-  userId: string;
+  avatarUrl: string;
+  username: string;
+  id: string;
   signature:string;
 }
 
 const userInfo = ref<UserInfo>({
-  avatar: '/src/static/icons/tab/ok.png',
-  nickName: 'zyh',
-  userId: '0001',
+  avatarUrl: '/src/static/icons/tab/ok.png',
+  username: 'zyh',
+  id: '0001',
   signature:'山风平平，湖水仄仄',
 });
+
+
 
 // 获取用户信息
 const getUserInfo = async () => {
@@ -22,10 +24,10 @@ const getUserInfo = async () => {
     const res = await TUIUserService.getUserProfile();
     if(res?.data) {
       userInfo.value = {
-        avatar: res.data.avatar || '/src/static/icons/tab/ok.png',
-        nickName: res.data.nick || res.data.userID,
-        userId: res.data.userID,
-		signature:res.data.signature || '这个人很懒什么都没留下..'
+        avatarUrl: res.data.avatar || '/src/static/icons/tab/ok.png',  
+        username: res.data.nick || res.data.id,
+        id: res.data.id,
+		    signature:res.data.signature || '这个人很懒什么都没留下..'
       };
     }
   } catch(error) {
@@ -33,6 +35,53 @@ const getUserInfo = async () => {
   }
 };
 
+//消息
+const message = () =>{
+  uni.navigateTo(
+    {
+      url:'/pages/mine/message'
+    }
+  )
+}
+
+
+//我的资料
+const myInfo = () => {
+  uni.navigateTo({
+    url: '/pages/mine/myInfo'
+  });
+}
+
+//小功能页面跳转
+const To = (page:string):void =>{
+  uni.navigateTo(
+    {
+      url:'/pages/mine/'+ page
+    }
+  )
+
+}
+
+//会议设置
+const meetingSetting = () =>{
+  uni.navigateTo({
+    url:'/pages/mine/meetingSetting'
+  })
+}
+
+//账号与安全
+const accountSecurity = () =>{
+  uni.navigateTo({
+    url:'/pages/mine/accountSecurity'
+  })
+}
+
+//关于我们
+const aboutUs = () =>{
+  uni.navigateTo({
+    url:'/pages/mine/aboutUs'
+  })
+}
 // 退出登录
 const handleLogout = () => {
   uni.showModal({
@@ -48,8 +97,11 @@ const handleLogout = () => {
   });
 };
 
+
 // 页面加载时获取用户信息
 getUserInfo();
+
+
 </script>
 
 <template>
@@ -58,15 +110,21 @@ getUserInfo();
     <div class="user-header">
       <!-- 添加一个包装器来实现相对定位 -->
       <div class="header-wrapper">
-        <!-- 消息图标放在这里 -->
-        <div class='message-icon'>
-				<uni-icons custom-prefix="iconfont" type="email" size="30"></uni-icons>
+        <!-- 消息图标和我的资料 -->
+        <div class='header-right'>
+          <div class='message-icon' @click="message">
+            <uni-icons custom-prefix="iconfont" type="email" size="30"></uni-icons>
+          </div>
+          <div class="profile-link" @click="myInfo">
+            <text>我的资料</text>
+            <uni-icons type="arrowright" size="14" color="#666"></uni-icons>
+          </div>
         </div>
         
         <div class="user-info">
-          <image :src="userInfo.avatar" class="avatar"></image>
+          <image :src="userInfo.avatarUrl" class="avatar"></image>
           <div class="info-right">
-            <text class="nickname">{{ userInfo.nickName }}</text>
+            <text class="username">{{ userInfo.username }}</text>
             <div class="user-type">
               <text class="user-signature">签名：{{userInfo.signature}}</text>
             </div>
@@ -85,27 +143,27 @@ getUserInfo();
     <div class="feature-grid">
 		
       <div class="feature-item" v-for="(item, index) in [
-		    {icon: 'ai', text: 'AI小助手'},
-        {icon: 'meeting', text: '个人会议室'},
-        {icon: 'record', text: '录制'},
-        {icon: 'note', text: '我的笔记'},
+		    {icon: 'ai', text: 'AI小助手',page:'aihelper'},
+        {icon: 'meeting', text: '个人会议室',page:'meeting'},
+        {icon: 'record', text: '录制',page:'record'},
+        {icon: 'note', text: '我的笔记',page:'note'},
       ]" :key="index">
-        <image :src="`/src/static/icons/tab/${item.icon}.svg`" class="feature-icon"></image>
-        <text class="feature-text">{{ item.text }}</text>
+        <image :src="`/src/static/icons/tab/${item.icon}.svg`" class="feature-icon"  @click =To(item.page)></image>
+        <text class="feature-text" @click =To(item.page)>{{ item.text }}</text>
       </div>
     </div>
 
     <!-- 设置项 -->
     <div class="settings-list">
-      <div class="settings-item">
+      <div class="settings-item" @click="meetingSetting">
         <text>会议设置</text>
         <uni-icons type="arrowright" size="20"></uni-icons>
       </div>
-      <div class="settings-item">
+      <div class="settings-item" @click="accountSecurity">
         <text>账号与安全</text>
        <uni-icons type="arrowright" size="20"></uni-icons>
       </div>
-      <div class="settings-item">
+      <div class="settings-item" @click="aboutUs">
         <text>关于我们</text>
         <uni-icons type="arrowright" size="20"></uni-icons>
       </div>
@@ -140,18 +198,37 @@ getUserInfo();
   position: relative; /* 添加相对定位 */
 }
 
-.message-icon {
-  position: absolute; /* 绝对定位 */
+.header-right {
+  position: absolute;
   top: 0;
   right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.message-icon {
   padding: 10rpx;
+}
+
+.profile-link {
+  display: flex;
+  align-items: center;
+  padding: 10rpx;
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.profile-link text {
+  margin-right: 4rpx;
 }
 
 .user-info {
   display: flex;
   align-items: center;
   margin-bottom: 30rpx;
-  padding-right: 80rpx; /* 为消息图标预留空间 */
+  padding-right: 120rpx;
 }
 
 .avatar {
@@ -165,7 +242,7 @@ getUserInfo();
   margin-left: 20rpx;
 }
 
-.nickname {
+.username {
   font-size: 36rpx;
   font-weight: 500;
   margin-bottom: 10rpx;

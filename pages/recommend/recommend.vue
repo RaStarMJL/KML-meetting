@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { recommendListdata, swiperListdata } from "./assets/data";
+<<<<<<< HEAD
 const defaultAvatar = "/src/static/icons/tab/ok.png";
 
 // 获取屏幕边界到安全区域距离
@@ -12,18 +13,57 @@ const swiperList = ref(swiperListdata);
 // 推荐会议数据
 const allrecommendList = ref(recommendListdata);
 const recommendList = ref([]);
+=======
+
+// 定义轮播图数据接口
+interface SwiperItem {
+  id: number;
+  image: string;
+  title: string;
+}
+
+// 定义推荐列表数据接口
+interface RecommendItem {
+  id: number;
+  title: string;
+  views: string;
+  duration: string;
+  cover: string;
+}
+
+// 定义分页参数接口
+interface PageParams {
+  page: number;
+  pageSize: number;
+}
+
+// 定义API返回数据接口
+interface ApiResponse {
+  result: {
+    items: RecommendItem[];
+    pages: number;
+  };
+}
+
+const defaultAvatar = "/src/static/icons/tab/ok.png";
+// 获取屏幕边界到安全区域距离
+const { safeAreaInsets } = uni.getSystemInfoSync();
+
+// 使用定义的接口类型
+const swiperList = ref<SwiperItem[]>(swiperListdata);
+const allrecommendList = ref<RecommendItem[]>(recommendListdata);
+const recommendList = ref<RecommendItem[]>([]);
+>>>>>>> zyh
 
 // 控制返回顶部按钮的显示/隐藏
 const showBackTop = ref(false);
 const scrollTop = ref(0);
-
 // scroll-view 的滚动事件处理
 const onScroll = (e: any) => {
   scrollTop.value = e.detail.scrollTop;
   showBackTop.value = e.detail.scrollTop > 0;
   console.log(scrollTop.value);
 };
-
 // 返回顶部方法
 const backToTop = () => {
   uni.pageScrollTo({
@@ -31,12 +71,18 @@ const backToTop = () => {
     duration: 300,
   });
 };
+<<<<<<< HEAD
 
+=======
+>>>>>>> zyh
 const loadMore = () => {
   getRecommendListData();
   console.log("滑动到底部了");
 };
+<<<<<<< HEAD
 
+=======
+>>>>>>> zyh
 // 分页参数
 const pageParams = {
   page: 1,
@@ -44,7 +90,10 @@ const pageParams = {
 };
 // 已结束标记
 const finish = ref(false);
+<<<<<<< HEAD
 // 获取会议数据
+=======
+>>>>>>> zyh
 const getRecommendListData = () => {
   // 退出分页判断
   if (finish.value === true) {
@@ -64,6 +113,7 @@ const getRecommendListData = () => {
     }
   }, 1000);
 };
+<<<<<<< HEAD
 // 分页查询API
 const getRecommendListDataAPI = (pageParams) => {
   const totalPage = Math.ceil(
@@ -72,13 +122,26 @@ const getRecommendListDataAPI = (pageParams) => {
   const items = allrecommendList.value.slice(
     (pageParams.page - 1) * pageParams.pageSize,
     pageParams.page * pageParams.pageSize
+=======
+const getRecommendListDataAPI = (params: PageParams): ApiResponse => {
+  const totalPage = Math.ceil(
+    allrecommendList.value.length / params.pageSize
+  );
+  const items = allrecommendList.value.slice(
+    (params.page - 1) * params.pageSize,
+    params.page * params.pageSize
+>>>>>>> zyh
   );
   const pages = totalPage;
   return { result: { items, pages } };
 };
+<<<<<<< HEAD
 
 const isTriggered = ref(false);
 // 上拉刷新
+=======
+const isTriggered = ref(false);
+>>>>>>> zyh
 const onRefresh = () => {
   // 开启动画
   isTriggered.value = true;
@@ -91,7 +154,6 @@ const onRefresh = () => {
   }, 1000);
   console.log("下拉刷新");
 };
-
 // fab 按钮配置，简化为单个按钮
 const fabPattern = {
   color: "#0052d9",
@@ -99,6 +161,7 @@ const fabPattern = {
   selectedColor: "#0052d9",
   buttonColor: "#0052d9",
 };
+<<<<<<< HEAD
 
 // 跳转到搜索界面
 const gotoSearch = () => {
@@ -118,20 +181,42 @@ const gotoMine = () => {
 onMounted(() => {
   getRecommendListData();
 });
+=======
+onMounted(() => {
+  getRecommendListData();
+});
+
+
+
+const search =() =>{
+  uni.navigateTo({
+url:"/pages/recommend/search"
+  })
+}
+>>>>>>> zyh
 </script>
 
 <template>
   <view
     class="page-container"
+<<<<<<< HEAD
     :style="{ paddingTop: safeAreaInsets.top + 'px' }">
+=======
+    :style="{ paddingTop: safeAreaInsets!.top + 'px' }">
+>>>>>>> zyh
     <!-- 固定头部 -->
     <view class="header">
       <!-- 搜索栏 -->
       <view class="search-bar">
+<<<<<<< HEAD
         <view class="user-avatar-wrapper" @tap="gotoMine"
           ><image :src="defaultAvatar" class="user-avatar"></image
         ></view>
         <view class="search-input" @tap="gotoSearch">
+=======
+        <image :src="defaultAvatar" class="user-avatar"></image>
+        <view class="search-input" @click="search">
+>>>>>>> zyh
           <uni-icons type="search" size="20" color="#666"></uni-icons>
           <input type="text" placeholder="搜索会议" />
         </view>
@@ -209,26 +294,22 @@ onMounted(() => {
   height: 93vh;
   overflow: hidden;
 }
-
 .header {
   background-color: #fff;
   z-index: 100;
 }
-
 .search-bar {
   display: flex;
   align-items: center;
   padding: 20rpx;
   background-color: #fff;
 }
-
 .user-avatar {
   width: 60rpx;
   height: 60rpx;
   border-radius: 50%;
   margin-right: 20rpx;
 }
-
 .search-input {
   flex: 1;
   display: flex;
@@ -238,32 +319,27 @@ onMounted(() => {
   padding: 12rpx 24rpx;
   margin-right: 20rpx;
 }
-
 .search-input input {
   flex: 1;
   margin-left: 16rpx;
   font-size: 28rpx;
 }
-
 .nav-bar {
   display: flex;
   justify-content: space-around;
   padding: 20rpx 0;
   border-bottom: 1rpx solid #eee;
 }
-
 .nav-item {
   font-size: 28rpx;
   color: #666;
   padding: 0 20rpx;
 }
-
 .nav-item.active {
   color: #0052d9;
   font-weight: bold;
   position: relative;
 }
-
 .nav-item.active::after {
   content: "";
   position: absolute;
@@ -275,18 +351,15 @@ onMounted(() => {
   background-color: #0052d9;
   border-radius: 2rpx;
 }
-
 .content-scroll {
   flex: 1;
   background-color: #f5f6f7;
   overflow: hidden; /* 确保没有其他样式影响滚动 */
 }
-
 .banner-swiper {
   height: 300rpx;
   margin: 20rpx;
 }
-
 .banner-item {
   position: relative;
   width: 100%;
@@ -294,12 +367,10 @@ onMounted(() => {
   border-radius: 12rpx;
   overflow: hidden;
 }
-
 .banner-item image {
   width: 100%;
   height: 100%;
 }
-
 .banner-title {
   position: absolute;
   bottom: 0;
@@ -310,31 +381,26 @@ onMounted(() => {
   color: #fff;
   font-size: 28rpx;
 }
-
 .meeting-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20rpx;
   padding: 20rpx;
 }
-
 .meeting-item {
   background-color: #fff;
   border-radius: 12rpx;
   overflow: hidden;
 }
-
 .meeting-cover {
   position: relative;
   width: 100%;
   height: 200rpx;
 }
-
 .meeting-cover image {
   width: 100%;
   height: 100%;
 }
-
 .meeting-duration {
   position: absolute;
   bottom: 10rpx;
@@ -345,11 +411,9 @@ onMounted(() => {
   padding: 4rpx 8rpx;
   border-radius: 4rpx;
 }
-
 .meeting-info {
   padding: 16rpx;
 }
-
 .meeting-title {
   font-size: 26rpx;
   color: #333;
@@ -359,18 +423,15 @@ onMounted(() => {
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
-
 .meeting-views {
   display: flex;
   align-items: center;
   font-size: 24rpx;
   color: #999;
 }
-
 .meeting-views text {
   margin-left: 6rpx;
 }
-
 /* 返回顶部按钮样式 */
 .back-to-top {
   position: fixed;
@@ -386,7 +447,10 @@ onMounted(() => {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 99;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> zyh
 /* // 加载提示文字 */
 .loading-text {
   text-align: center;
@@ -394,4 +458,8 @@ onMounted(() => {
   color: #666;
   padding: 20rpx 0;
 }
+<<<<<<< HEAD
 </style>
+=======
+</style>
+>>>>>>> zyh
