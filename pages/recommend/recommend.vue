@@ -44,6 +44,7 @@ const pageParams = {
 };
 // 已结束标记
 const finish = ref(false);
+// 获取会议数据
 const getRecommendListData = () => {
   // 退出分页判断
   if (finish.value === true) {
@@ -63,7 +64,7 @@ const getRecommendListData = () => {
     }
   }, 1000);
 };
-
+// 分页查询API
 const getRecommendListDataAPI = (pageParams) => {
   const totalPage = Math.ceil(
     allrecommendList.value.length / pageParams.pageSize
@@ -77,6 +78,7 @@ const getRecommendListDataAPI = (pageParams) => {
 };
 
 const isTriggered = ref(false);
+// 上拉刷新
 const onRefresh = () => {
   // 开启动画
   isTriggered.value = true;
@@ -98,6 +100,21 @@ const fabPattern = {
   buttonColor: "#0052d9",
 };
 
+// 跳转到搜索界面
+const gotoSearch = () => {
+  uni.navigateTo({
+    url: "/pages/search/search",
+  });
+};
+
+// 跳转到我的界面
+const gotoMine = () => {
+  uni.navigateTo({
+    url: "/pages/mine/mine",
+  });
+  console.log("111");
+};
+
 onMounted(() => {
   getRecommendListData();
 });
@@ -106,13 +123,15 @@ onMounted(() => {
 <template>
   <view
     class="page-container"
-    :style="{ paddingTop: safeAreaInsets!.top + 'px' }">
+    :style="{ paddingTop: safeAreaInsets.top + 'px' }">
     <!-- 固定头部 -->
     <view class="header">
       <!-- 搜索栏 -->
       <view class="search-bar">
-        <image :src="defaultAvatar" class="user-avatar"></image>
-        <view class="search-input">
+        <view class="user-avatar-wrapper" @tap="gotoMine"
+          ><image :src="defaultAvatar" class="user-avatar"></image
+        ></view>
+        <view class="search-input" @tap="gotoSearch">
           <uni-icons type="search" size="20" color="#666"></uni-icons>
           <input type="text" placeholder="搜索会议" />
         </view>
