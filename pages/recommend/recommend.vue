@@ -128,8 +128,6 @@ const search =() =>{
   uni.navigateTo({
 url:"/pages/recommend/search"
   })
-
-
 }
 </script>
 
