@@ -4,6 +4,7 @@
     {
       "path": "pages/recommend/recommend",
       "style": {
+        "navigationStyle": "custom", // 隐藏默认导航
         "navigationBarTitleText": "推荐"
       }
     },
@@ -88,6 +89,13 @@
     "backgroundColor": "#F8F8F8",
     "app-plus": {
       "titleView": false
+    }
+  },
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      // uni-ui 规则如下配置
+      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
     }
   },
   "condition": {
