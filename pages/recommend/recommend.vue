@@ -1,19 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { recommendListdata, swiperListdata } from "./assets/data";
-<<<<<<< HEAD
-const defaultAvatar = "/src/static/icons/tab/ok.png";
-
-// 获取屏幕边界到安全区域距离
-const { safeAreaInsets } = uni.getSystemInfoSync();
-
-// 轮播图数据
-const swiperList = ref(swiperListdata);
-
-// 推荐会议数据
-const allrecommendList = ref(recommendListdata);
-const recommendList = ref([]);
-=======
 
 // 定义轮播图数据接口
 interface SwiperItem {
@@ -53,7 +40,6 @@ const { safeAreaInsets } = uni.getSystemInfoSync();
 const swiperList = ref<SwiperItem[]>(swiperListdata);
 const allrecommendList = ref<RecommendItem[]>(recommendListdata);
 const recommendList = ref<RecommendItem[]>([]);
->>>>>>> zyh
 
 // 控制返回顶部按钮的显示/隐藏
 const showBackTop = ref(false);
@@ -71,18 +57,10 @@ const backToTop = () => {
     duration: 300,
   });
 };
-<<<<<<< HEAD
-
-=======
->>>>>>> zyh
 const loadMore = () => {
   getRecommendListData();
   console.log("滑动到底部了");
 };
-<<<<<<< HEAD
-
-=======
->>>>>>> zyh
 // 分页参数
 const pageParams = {
   page: 1,
@@ -90,10 +68,6 @@ const pageParams = {
 };
 // 已结束标记
 const finish = ref(false);
-<<<<<<< HEAD
-// 获取会议数据
-=======
->>>>>>> zyh
 const getRecommendListData = () => {
   // 退出分页判断
   if (finish.value === true) {
@@ -113,35 +87,16 @@ const getRecommendListData = () => {
     }
   }, 1000);
 };
-<<<<<<< HEAD
-// 分页查询API
-const getRecommendListDataAPI = (pageParams) => {
-  const totalPage = Math.ceil(
-    allrecommendList.value.length / pageParams.pageSize
-  );
-  const items = allrecommendList.value.slice(
-    (pageParams.page - 1) * pageParams.pageSize,
-    pageParams.page * pageParams.pageSize
-=======
 const getRecommendListDataAPI = (params: PageParams): ApiResponse => {
-  const totalPage = Math.ceil(
-    allrecommendList.value.length / params.pageSize
-  );
+  const totalPage = Math.ceil(allrecommendList.value.length / params.pageSize);
   const items = allrecommendList.value.slice(
     (params.page - 1) * params.pageSize,
     params.page * params.pageSize
->>>>>>> zyh
   );
   const pages = totalPage;
   return { result: { items, pages } };
 };
-<<<<<<< HEAD
-
 const isTriggered = ref(false);
-// 上拉刷新
-=======
-const isTriggered = ref(false);
->>>>>>> zyh
 const onRefresh = () => {
   // 开启动画
   isTriggered.value = true;
@@ -161,62 +116,27 @@ const fabPattern = {
   selectedColor: "#0052d9",
   buttonColor: "#0052d9",
 };
-<<<<<<< HEAD
+onMounted(() => {
+  getRecommendListData();
+});
 
-// 跳转到搜索界面
-const gotoSearch = () => {
+const goToSearch = () => {
   uni.navigateTo({
     url: "/pages/search/search",
   });
 };
-
-// 跳转到我的界面
-const gotoMine = () => {
-  uni.navigateTo({
-    url: "/pages/mine/mine",
-  });
-  console.log("111");
-};
-
-onMounted(() => {
-  getRecommendListData();
-});
-=======
-onMounted(() => {
-  getRecommendListData();
-});
-
-
-
-const search =() =>{
-  uni.navigateTo({
-url:"/pages/recommend/search"
-  })
-}
->>>>>>> zyh
 </script>
 
 <template>
   <view
     class="page-container"
-<<<<<<< HEAD
     :style="{ paddingTop: safeAreaInsets.top + 'px' }">
-=======
-    :style="{ paddingTop: safeAreaInsets!.top + 'px' }">
->>>>>>> zyh
     <!-- 固定头部 -->
     <view class="header">
       <!-- 搜索栏 -->
       <view class="search-bar">
-<<<<<<< HEAD
-        <view class="user-avatar-wrapper" @tap="gotoMine"
-          ><image :src="defaultAvatar" class="user-avatar"></image
-        ></view>
-        <view class="search-input" @tap="gotoSearch">
-=======
         <image :src="defaultAvatar" class="user-avatar"></image>
-        <view class="search-input" @click="search">
->>>>>>> zyh
+        <view class="search-input" @click="goToSearch">
           <uni-icons type="search" size="20" color="#666"></uni-icons>
           <input type="text" placeholder="搜索会议" />
         </view>
@@ -447,10 +367,6 @@ url:"/pages/recommend/search"
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 99;
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> zyh
 /* // 加载提示文字 */
 .loading-text {
   text-align: center;
@@ -458,8 +374,4 @@ url:"/pages/recommend/search"
   color: #666;
   padding: 20rpx 0;
 }
-<<<<<<< HEAD
 </style>
-=======
-</style>
->>>>>>> zyh
