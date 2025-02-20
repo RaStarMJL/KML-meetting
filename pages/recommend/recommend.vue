@@ -1,134 +1,148 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import NavBar from "./components/NavBar.vue";
+import { onMounted, ref } from "vue";
+import { recommendListdata, swiperListdata } from "./assets/data";
 
-const defaultAvatar = '/src/static/icons/tab/ok.png';
+// 定义轮播图数据接口
+interface SwiperItem {
+  id: number;
+  image: string;
+  title: string;
+}
 
-// 轮播图数据
-const swiperList = ref([
-  {
-    id: 1,
-    image: '/static/images/banner1.jpg',
-    title: '2024技术峰会'
-  },
-  {
-    id: 2,
-    image: '/static/images/banner2.jpg',
-    title: 'AI发展论坛'
-  },
-  {
-    id: 3,
-    image: '/static/images/banner3.jpg',
-    title: '创新创业大会'
-  }
-]);
+// 定义推荐列表数据接口
+interface RecommendItem {
+  id: number;
+  title: string;
+  views: string;
+  duration: string;
+  cover: string;
+}
 
-// 推荐会议数据
-const recommendList = ref([
-  {
-    id: 1,
-    title: '普现急速摸卡流',
-    views: '1381',
-    duration: '1:30:00',
-    cover: '/static/images/meeting1.jpg'
-  },
-  {
-    id: 2,
-    title: '从来如此，便对么？',
-    views: '302.1万',
-    duration: '2:59',
-    cover: '/static/images/meeting2.jpg'
-  },
-  {
-    id: 3,
-    title: 'STM32智能大棚项目',
-    views: '2078',
-    duration: '7:31',
-    cover: '/static/images/meeting3.jpg'
-  },
-  {
-    id: 4,
-    title: '洛克王国开发进度分享',
-    views: '293.2万',
-    duration: '1:49',
-    cover: '/static/images/meeting4.jpg'
-  },
-  {
-    id: 5,
-    title: '2024前端技术分享会',
-    views: '5.2万',
-    duration: '45:21',
-    cover: '/static/images/meeting5.jpg'
-  },
-  {
-    id: 6,
-    title: 'AI助手开发经验分享',
-    views: '12.5万',
-    duration: '32:15',
-    cover: '/static/images/meeting6.jpg'
-  },
-  {
-    id: 7,
-    title: '区块链技术应用实践',
-    views: '8.9万',
-    duration: '1:15:00',
-    cover: '/static/images/meeting7.jpg'
-  },
-  {
-    id: 8,
-    title: '移动应用性能优化',
-    views: '6.7万',
-    duration: '55:30',
-    cover: '/static/images/meeting8.jpg'
-  },
-  {
-    id: 9,
-    title: '云原生架构设计',
-    views: '15.3万',
-    duration: '1:20:00',
-    cover: '/static/images/meeting9.jpg'
-  },
-  {
-    id: 10,
-    title: '微服务部署与运维',
-    views: '9.4万',
-    duration: '48:25',
-    cover: '/static/images/meeting10.jpg'
-  }
-]);
+// 定义分页参数接口
+interface PageParams {
+  page: number;
+  pageSize: number;
+}
+
+// 定义API返回数据接口
+interface ApiResponse {
+  result: {
+    items: RecommendItem[];
+    pages: number;
+  };
+}
+
+const defaultAvatar = "/src/static/icons/tab/ok.png";
+// 获取屏幕边界到安全区域距离
+const { safeAreaInsets } = uni.getSystemInfoSync();
+
+// 使用定义的接口类型
+const swiperList = ref<SwiperItem[]>(swiperListdata);
+const allrecommendList = ref<RecommendItem[]>(recommendListdata);
+const recommendList = ref<RecommendItem[]>([]);
 
 // 控制返回顶部按钮的显示/隐藏
 const showBackTop = ref(false);
 const scrollTop = ref(0);
-
 // scroll-view 的滚动事件处理
 const onScroll = (e: any) => {
   scrollTop.value = e.detail.scrollTop;
   showBackTop.value = e.detail.scrollTop > 0;
+  console.log(scrollTop.value);
 };
-
 // 返回顶部方法
 const backToTop = () => {
-  scrollTop.value = 0;
+  uni.pageScrollTo({
+    scrollTop: 0,
+    duration: 300,
+  });
 };
-
+const loadMore = () => {
+  getRecommendListData();
+  console.log("滑动到底部了");
+};
+// 分页参数
+const pageParams = {
+  page: 1,
+  pageSize: 10,
+};
+// 已结束标记
+const finish = ref(false);
+const getRecommendListData = () => {
+  // 退出分页判断
+  if (finish.value === true) {
+    return uni.showToast({ icon: "none", title: "没有更多数据~" });
+  }
+  const res = getRecommendListDataAPI(pageParams);
+  setTimeout(() => {
+    console.log(res);
+    // 数组追加
+    recommendList.value.push(...res.result.items);
+    // 分页条件
+    if (pageParams.page < res.result.pages) {
+      // 页码累加
+      pageParams.page++;
+    } else {
+      finish.value = true;
+    }
+  }, 1000);
+};
+const getRecommendListDataAPI = (params: PageParams): ApiResponse => {
+  const totalPage = Math.ceil(
+    allrecommendList.value.length / params.pageSize
+  );
+  const items = allrecommendList.value.slice(
+    (params.page - 1) * params.pageSize,
+    params.page * params.pageSize
+  );
+  const pages = totalPage;
+  return { result: { items, pages } };
+};
+const isTriggered = ref(false);
+const onRefresh = () => {
+  // 开启动画
+  isTriggered.value = true;
+  setTimeout(() => {
+    pageParams.page = 1;
+    recommendList.value = [];
+    finish.value = false;
+    isTriggered.value = false;
+    getRecommendListData();
+  }, 1000);
+  console.log("下拉刷新");
+};
 // fab 按钮配置，简化为单个按钮
 const fabPattern = {
-  color: '#0052d9',
-  backgroundColor: '#fff',
-  selectedColor: '#0052d9',
-  buttonColor: '#0052d9'
+  color: "#0052d9",
+  backgroundColor: "#fff",
+  selectedColor: "#0052d9",
+  buttonColor: "#0052d9",
 };
+onMounted(() => {
+  getRecommendListData();
+});
+
+
+
+const search =() =>{
+  uni.navigateTo({
+url:"/pages/recommend/search"
+  })
+
+
+}
 </script>
 
 <template>
-  <view class="page-container">
+  <view
+    class="page-container"
+    :style="{ paddingTop: safeAreaInsets!.top + 'px' }">
     <!-- 固定头部 -->
     <view class="header">
       <!-- 搜索栏 -->
       <view class="search-bar">
         <image :src="defaultAvatar" class="user-avatar"></image>
-        <view class="search-input">
+        <view class="search-input" @click="search">
           <uni-icons type="search" size="20" color="#666"></uni-icons>
           <input type="text" placeholder="搜索会议" />
         </view>
@@ -147,18 +161,22 @@ const fabPattern = {
     </view>
 
     <!-- 滚动内容区域 -->
-    <scroll-view 
-      scroll-y 
+    <scroll-view
+      scroll-y
       class="content-scroll"
-      :scroll-top="scrollTop"
       @scrolltolower="loadMore"
+      :refresher-triggered="isTriggered"
       refresher-enabled
       @refresherrefresh="onRefresh"
-      @scroll="onScroll"
-      scroll-with-animation
-    >
+      scroll-with-animation>
       <!-- 轮播图 -->
-      <swiper class="banner-swiper" circular :indicator-dots="true" :autoplay="true" interval="3000" duration="1000">
+      <swiper
+        class="banner-swiper"
+        circular
+        :indicator-dots="true"
+        :autoplay="true"
+        interval="3000"
+        duration="1000">
         <swiper-item v-for="item in swiperList" :key="item.id">
           <view class="banner-item">
             <image :src="item.image" mode="aspectFill"></image>
@@ -183,16 +201,15 @@ const fabPattern = {
           </view>
         </view>
       </view>
+      <view class="loading-text">
+        {{ finish ? "没有更多数据~" : "正在加载..." }}
+      </view>
     </scroll-view>
 
     <!-- 简单的返回顶部按钮 -->
-    <view 
-      v-show="showBackTop" 
-      class="back-to-top"
-      @click="backToTop"
-    >
+    <!-- <view v-show="showBackTop" class="back-to-top" @click="backToTop">
       <uni-icons type="top" size="20" color="#fff"></uni-icons>
-    </view>
+    </view> -->
   </view>
 </template>
 
@@ -200,28 +217,25 @@ const fabPattern = {
 .page-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 93vh;
+  overflow: hidden;
 }
-
 .header {
   background-color: #fff;
   z-index: 100;
 }
-
 .search-bar {
   display: flex;
   align-items: center;
   padding: 20rpx;
   background-color: #fff;
 }
-
 .user-avatar {
   width: 60rpx;
   height: 60rpx;
   border-radius: 50%;
   margin-right: 20rpx;
 }
-
 .search-input {
   flex: 1;
   display: flex;
@@ -231,34 +245,29 @@ const fabPattern = {
   padding: 12rpx 24rpx;
   margin-right: 20rpx;
 }
-
 .search-input input {
   flex: 1;
   margin-left: 16rpx;
   font-size: 28rpx;
 }
-
 .nav-bar {
   display: flex;
   justify-content: space-around;
   padding: 20rpx 0;
   border-bottom: 1rpx solid #eee;
 }
-
 .nav-item {
   font-size: 28rpx;
   color: #666;
   padding: 0 20rpx;
 }
-
 .nav-item.active {
   color: #0052d9;
   font-weight: bold;
   position: relative;
 }
-
 .nav-item.active::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -10rpx;
   left: 50%;
@@ -268,17 +277,15 @@ const fabPattern = {
   background-color: #0052d9;
   border-radius: 2rpx;
 }
-
 .content-scroll {
   flex: 1;
   background-color: #f5f6f7;
+  overflow: hidden; /* 确保没有其他样式影响滚动 */
 }
-
 .banner-swiper {
   height: 300rpx;
   margin: 20rpx;
 }
-
 .banner-item {
   position: relative;
   width: 100%;
@@ -286,62 +293,53 @@ const fabPattern = {
   border-radius: 12rpx;
   overflow: hidden;
 }
-
 .banner-item image {
   width: 100%;
   height: 100%;
 }
-
 .banner-title {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   padding: 20rpx;
-  background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
   color: #fff;
   font-size: 28rpx;
 }
-
 .meeting-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20rpx;
   padding: 20rpx;
 }
-
 .meeting-item {
   background-color: #fff;
   border-radius: 12rpx;
   overflow: hidden;
 }
-
 .meeting-cover {
   position: relative;
   width: 100%;
   height: 200rpx;
 }
-
 .meeting-cover image {
   width: 100%;
   height: 100%;
 }
-
 .meeting-duration {
   position: absolute;
   bottom: 10rpx;
   right: 10rpx;
-  background-color: rgba(0,0,0,0.6);
+  background-color: rgba(0, 0, 0, 0.6);
   color: #fff;
   font-size: 24rpx;
   padding: 4rpx 8rpx;
   border-radius: 4rpx;
 }
-
 .meeting-info {
   padding: 16rpx;
 }
-
 .meeting-title {
   font-size: 26rpx;
   color: #333;
@@ -351,18 +349,15 @@ const fabPattern = {
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
-
 .meeting-views {
   display: flex;
   align-items: center;
   font-size: 24rpx;
   color: #999;
 }
-
 .meeting-views text {
   margin-left: 6rpx;
 }
-
 /* 返回顶部按钮样式 */
 .back-to-top {
   position: fixed;
@@ -375,7 +370,14 @@ const fabPattern = {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 99;
+}
+/* // 加载提示文字 */
+.loading-text {
+  text-align: center;
+  font-size: 28rpx;
+  color: #666;
+  padding: 20rpx 0;
 }
 </style>

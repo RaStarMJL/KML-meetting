@@ -1,6 +1,5 @@
 {
   "pages": [
-    //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {
       "path": "pages/recommend/recommend",
       "style": {
@@ -18,6 +17,75 @@
       "style": {
         "navigationBarTitleText": "我的"
       }
+    },
+    {
+      "path": "pages/mine/myInfo",
+      "style": {
+        "navigationBarTitleText": "我的资料"
+      }
+    },
+    {
+    	"path" : "pages/mine/aihelper",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : "AI小助手"
+    	}
+    },
+    {
+    	"path" : "pages/mine/note",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : "我的笔记"
+    	}
+    },
+    {
+    	"path" : "pages/mine/record",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : "录制"
+    	}
+    },
+    {
+    	"path" : "pages/mine/meeting",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : "个人会议室"
+    	}
+    },
+    {
+    	"path" : "pages/mine/aboutUs",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : "关于我们"
+    	}
+    },
+    {
+    	"path" : "pages/mine/accountSecurity",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : "账号与安全"
+    	}
+    },
+    {
+    	"path" : "pages/mine/meetingSetting",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : "会议设置"
+    	}
+    },
+    {
+    	"path" : "pages/mine/message",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : "个人消息"
+    	}
+    },
+    {
+    	"path" : "pages/recommend/search",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : "搜索"
+    	}
     }
   ],
   "tabBar": {
@@ -80,7 +148,6 @@
       ]
     }
   ],
-
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "uni-app",
